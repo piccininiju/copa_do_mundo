@@ -12,6 +12,10 @@
     <nav>
         <ul>
             <li><a href="selecao/selecao_list.php">Gerenciar seleções</a></li>
+            <li><a href="jogador/jogador_list.php">Gerenciar jogadores</a></li>
+            <li><a href="partida/partida_list.php">Gerenciar partidas</a></li>
+            <li><a href="gol/gol_list.php">Gerenciar gols</a></li>
+            <li><a href="classificacao/classificacao.php">Ver classificações gerais</a></li>
         </ul>
     </nav>
 </body>

@@ -15,7 +15,7 @@ CREATE TABLE jogadores (
     numero_camisa INT NOT NULL,
     posicao VARCHAR(50) NOT NULL,
     selecao_id INT NOT NULL,
-    FOREIGN KEY (selecao_id) REFERENCES selecoes(id) ON DELETE CASCADE,
+    FOREIGN KEY (selecao_id) REFERENCES selecoes(id) ON DELETE RESTRICT,
     UNIQUE (numero_camisa, selecao_id)
 );
 
