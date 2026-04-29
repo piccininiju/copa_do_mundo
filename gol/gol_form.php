@@ -9,21 +9,18 @@ $partida_id = null;
 $jogador_id = null;
 $minuto = null;
 
-// EXCLUIR
 if (isset($_GET['del'])) {
     $gol->excluir($_GET['del']);
     header("Location: gol_list.php");
     exit;
 }
 
-// SALVAR (INSERT ou UPDATE)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'] ?? null;
     $partida_id = $_POST['partida_id'] ?? null;
     $jogador_id = $_POST['jogador_id'] ?? null;
     $minuto = $_POST['minuto'] ?? null;
 
-    // VALIDAÇÕES CORRETAS
     if (!$partida_id || !$jogador_id || $minuto === null) {
         die("Todos os campos são obrigatórios");
     }

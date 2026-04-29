@@ -5,6 +5,7 @@ require_once 'jogador.php';
 
 $jogador = new Jogador($pdo);
 $jogadores = $jogador->listar();
+$erro = $_GET['erro'] ?? null;
 ?>
 
 <html lang="pt-BR">
@@ -16,6 +17,11 @@ $jogadores = $jogador->listar();
 
 <body>
     <h1>Jogadores</h1>
+    <?php if ($erro): ?>
+        <script>
+            alert(<?= json_encode($erro) ?>);
+        </script>
+    <?php endif; ?>
     <a href="jogador_form.php">Adicionar jogador</a>
     <table border="1" cellpadding="5">
         <tr>

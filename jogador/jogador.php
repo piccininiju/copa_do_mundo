@@ -21,6 +21,13 @@ class Jogador
 
     public function excluir($id)
     {
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM gols WHERE jogador_id = ?");
+        $stmt->execute([$id]);
+
+        if ($stmt->fetchColumn() > 0) {
+            throw new Exception("Não é possível excluir: existem gols vinculados a esse jogador.");
+        }
+
         $stmt = $this->pdo->prepare("DELETE FROM jogadores WHERE id = ?");
         return $stmt->execute([$id]);
     }

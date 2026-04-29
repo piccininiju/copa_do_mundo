@@ -2,58 +2,56 @@
 require_once '../banco_de_dados/db.php';
 
 $stmt = "SELECT 
-    s.id,
-    s.nome,
-    s.grupo,
-    s.pontos,
+            s.id,
+            s.nome,
+            s.grupo,
+            s.pontos,
 
-    COALESCE(SUM(t.gols_pro), 0) AS gols_pro,
-    COALESCE(SUM(t.gols_contra), 0) AS gols_contra,
-    COALESCE(SUM(t.gols_pro - t.gols_contra), 0) AS saldo
+            COALESCE(SUM(t.gols_pro), 0) AS gols_pro,
+            COALESCE(SUM(t.gols_contra), 0) AS gols_contra,
+            COALESCE(SUM(t.gols_pro - t.gols_contra), 0) AS saldo
+        FROM selecoes s
+        LEFT JOIN (
+            SELECT 
+                p.selecao_casa_id AS selecao_id,
 
-FROM selecoes s
+                CASE 
+                    WHEN p.gols_casa > p.gols_visitante THEN 3
+                    WHEN p.gols_casa = p.gols_visitante THEN 1
+                    ELSE 0
+                END AS pontos,
 
-LEFT JOIN (
-    SELECT 
-        p.selecao_casa_id AS selecao_id,
+                p.gols_casa AS gols_pro,
+                p.gols_visitante AS gols_contra
 
-        CASE 
-            WHEN p.gols_casa > p.gols_visitante THEN 3
-            WHEN p.gols_casa = p.gols_visitante THEN 1
-            ELSE 0
-        END AS pontos,
+            FROM partidas p
+            WHERE p.status = 'finalizada'
 
-        p.gols_casa AS gols_pro,
-        p.gols_visitante AS gols_contra
+            UNION ALL
 
-    FROM partidas p
-    WHERE p.status = 'finalizada'
+            SELECT 
+                p.selecao_visitante_id AS selecao_id,
 
-    UNION ALL
+                CASE 
+                    WHEN p.gols_visitante > p.gols_casa THEN 3
+                    WHEN p.gols_visitante = p.gols_casa THEN 1
+                    ELSE 0
+                END AS pontos,
 
-    SELECT 
-        p.selecao_visitante_id AS selecao_id,
+                p.gols_visitante AS gols_pro,
+                p.gols_casa AS gols_contra
 
-        CASE 
-            WHEN p.gols_visitante > p.gols_casa THEN 3
-            WHEN p.gols_visitante = p.gols_casa THEN 1
-            ELSE 0
-        END AS pontos,
+            FROM partidas p
+            WHERE p.status = 'finalizada'
 
-        p.gols_visitante AS gols_pro,
-        p.gols_casa AS gols_contra
+        ) t ON s.id = t.selecao_id
 
-    FROM partidas p
-    WHERE p.status = 'finalizada'
+        GROUP BY s.id, s.nome, s.grupo
 
-) t ON s.id = t.selecao_id
-
-GROUP BY s.id, s.nome, s.grupo
-
-ORDER BY 
-    pontos DESC,
-    saldo DESC,
-    gols_pro DESC
+        ORDER BY 
+            pontos DESC,
+            saldo DESC,
+            gols_pro DESC
 ";
 
 $classificacao = $pdo->query($stmt)->fetchAll(PDO::FETCH_ASSOC);
