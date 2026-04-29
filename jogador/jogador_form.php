@@ -6,14 +6,18 @@ $jogador = new Jogador($pdo);
 $nome = $posicao = '';
 $numero_camisa = $selecao_id = null;
 $id = $_GET['id'] ?? null;
+$erro = null;
 
 if (isset($_GET['del'])) {
-    $jogador->excluir($_GET['del']);
-    header("Location: jogador_list.php");
-    exit;
+    try {
+        $jogador->excluir($_GET['del']);
+        header("Location: jogador_list.php");
+        exit;
+    } catch (Exception $e) {
+        header("Location: jogador_list.php?erro=" . urlencode($e->getMessage()));
+        exit;
+    }
 }
-
-$erro = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'] ?? null;
