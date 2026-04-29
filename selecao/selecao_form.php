@@ -4,14 +4,10 @@ require_once 'selecao.php';
 
 $selecao = new Selecao($pdo);
 $nome = $grupo = $tecnico = '';
-$pontos = 0;
+$pontos = null;
 $id = $_GET['id'] ?? null;
+$erro = null;
 
-if (isset($_GET['del'])) {
-    $selecao->excluir($_GET['del']);
-    header("Location: selecao_list.php");
-    exit;
-}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = $_POST['id'] ?? null;
@@ -36,6 +32,8 @@ if ($id) {
     $tecnico = $dados['tecnico'] ?? '';
     $pontos = $dados['pontos'] ?? null;
 }
+
+
 ?>
 
 <html lang="pt-BR">
@@ -50,15 +48,16 @@ if ($id) {
     <form method="post">
         <input type="hidden" name="id" value="<?= $id ?>">
         <label>Nome: </label><br>
-        <input type="text" name="nome" value="<?= htmlspecialchars($nome) ?>" require><br>
+        <input type="text" name="nome" value="<?= htmlspecialchars($nome) ?>" required><br>
         <label>Grupo: </label><br>
-        <input type="text" name="grupo" value="<?= htmlspecialchars($grupo) ?>" require><br>
+        <input type="text" name="grupo" value="<?= htmlspecialchars($grupo) ?>" required><br>
         <label>Técnico: </label><br>
-        <input type="text" name="tecnico" value="<?= htmlspecialchars($tecnico) ?>" require><br>
+        <input type="text" name="tecnico" value="<?= htmlspecialchars($tecnico) ?>" required><br>
         <label>Pontos: </label><br>
-        <input type="number" name="pontos" value="<?= htmlspecialchars($pontos) ?>" require><br>
+        <input type="number" name="pontos" value="<?= htmlspecialchars($pontos) ?>" required><br>
         <button type="submit">Salvar</button>
         <a href="selecao_list.php">Voltar</a>
     </form>
+</body>
 
 </html>

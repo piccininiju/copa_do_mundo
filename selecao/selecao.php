@@ -11,12 +11,20 @@ class Selecao
 
     public function listar()
     {
-        $stmt = $this->pdo->query("SELECT * FROM selecoes ORDER BY nome");
+        $stmt = $this->pdo->query("SELECT * FROM selecoes ORDER BY id");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function excluir($id)
     {
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM jogadores WHERE selecao_id = ?");
+        $stmt->execute([$id]);
+        $total = $stmt->fetchColumn();
+
+        if ($total > 0) {
+            throw new Exception("Não é possível excluir: existem jogadores nessa seleção.");
+        }
+
         $stmt = $this->pdo->prepare("DELETE FROM selecoes WHERE id = ?");
         return $stmt->execute([$id]);
     }
